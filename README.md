@@ -7,11 +7,11 @@
 
 ---
 
-- **23-11-30 : #8.0 ~ #8.9 / Framer-Motion(1) (+ Code Challenge(2 days)[1st day])**
+- **23-11-30 : #8.0 ~ #8.10 / Framer-Motion(1) (+ Code Challenge(2 days)[1st day])**
 
 ---
 
-- **23-12-01 : #8.10 ~ #8.16 / Framer-Motion(2) (+ Code Challenge(2 days)[2nd day])**
+- **23-12-01 : #8.11 ~ #8.16 / Framer-Motion(2) (+ Code Challenge(2 days)[2nd day])**
 
 노마드 코더 정책 상 강의요약은 괜찮으나, 코드와 필기는 공개적인 곳에 올리면 안 됨.
 필기 요약지는 암호화된 .zip 파일로 저장함.
