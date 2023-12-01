@@ -212,6 +212,8 @@
       };
       ```
 - **23-12-01 : #8.11 ~ #8.16 / Framer-Motion(2) (+ Code Challenge(2 days)[2nd day])**
+  - https://codesandbox.io/p/devbox/framer-motion-23-12-01-krslcw
+  - https://krslcw-5173.csb.app/
 
 ---
 
