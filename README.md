@@ -212,8 +212,134 @@
       };
       ```
 - **23-12-01 : #8.11 ~ #8.16 / Framer-Motion(2) (+ Code Challenge(2 days)[2nd day])**
-  - https://codesandbox.io/p/devbox/framer-motion-23-12-01-krslcw
-  - https://krslcw-5173.csb.app/
+  - _Framer-Motion Challenge_
+    - _<a href="https://krslcw-5173.csb.app/" target="_blank">결과물</a>_
+    - _<a href="https://codesandbox.io/p/devbox/framer-motion-23-12-01-krslcw" target="_blank">코드</a>_
+  - &lt;AnimatePresence&gt;
+    - React에서 사라지는 컴포넌트를 animate할 수 있도록하는 컴포넌트
+      - 일반 React에서는 컴포넌트가 사라질 때의 애니메이션을 설정할 수 없음
+    - 사용법 : `<AnimatePresence> ... </AnimatePresence>`
+      1. &lt;AnimatePresence&gt;는 'visible' 상태이어야 함
+      2. &lt;AnimatePresence&gt;의 내부에는 조건문이 있어야 함
+    - 'exit' 프로퍼티 : 컴포넌트가 사라지는 애니메이션을 정의
+  - ex.
+    ```
+    <AnimatePresence>
+      {showing ? (
+        <Box
+          variants={boxVariants}
+          initial="initial"
+          animate="visible"
+          exit="exit"
+        />
+      ) : null}
+    </AnimatePresence>
+    ```
+  - 슬라이더
+    - &lt;AnimatePresence&gt;를 사용해 슬라이더를 구현할 수 있음
+    - '배열.map()'을 사용해 여러 개의 element를 생성
+    - React에서는 'key'값이 다르면 새로운 element로 인식하기 때문에, 간단하게 코딩 가능
+      - element의 'key'값만 바꾸어주면 됨
+    - ex.
+      ```
+      const [visible, setVisible] = useState(0);
+      const onNext = () => setVisible((prev) => (prev === 9 ? 0 : prev + 1));
+      <AnimatePresence>
+        <Box
+          variants={boxVariants}
+          initial="invisible"
+          animate="visible"
+          exit="exit"
+          key={visible}
+        >
+          {visible}
+        </Box>
+      </AnimatePresence>
+      <button onClick={onNext}>next</button>
+      ```
+  - Variants에서 조건문 생성법
+    - 커스텀 프로퍼티 : variants에 데이터를 보내는 프로퍼티
+    - 선언법 : <AnimatePresence>와 사용할 컴포넌트에 `'custom={커스텀값}' 프로퍼티`를 추가하여 사용
+      - 한 컴포넌트에만 사용 시 제대로 적용되지 않음
+    - 사용법 : variants값을 `(커스텀값) => ({ ... })` 형식으로 사용
+      - 꼭 'custom'프로퍼티의 값과 같은 이름을 사용할 필요는 없음
+    - ex.
+      ```
+      const boxVariants: Variants = {
+        entry: (isBack: boolean) => ({
+          x: isBack ? -500 : 500,
+        }),
+        center: {
+          x: 0,
+        },
+        exit: (isBack: boolean) => ({
+          x: isBack ? 500 : -500,
+        }),
+      };
+      const [back, setBack] = useState(false);
+      <AnimatePresence custom={back}>
+        <Box
+          custom={back}
+          variants={boxVariants}
+          initial="entry"
+          animate="center"
+          exit="exit"
+          key={visible}
+        >
+          {visible}
+        </Box>
+      </AnimatePresence>
+      ```
+  - &lt;AnimatePresence&gt;의 애니메이션 모드
+    - 기본값으로 컴포넌트의 생성 애니메이션과 삭제 애니메이션 동시에 작동함
+    - `mode="wait"`프로퍼티 사용 시 삭제 애니메이션이 끝난 후, 생성 애니메이션을 작동
+  - Layout 애니메이션
+    - layout이 바뀌는 것을 자동으로 애니메이션화
+    - 사용법 : 컴포넌트에 `layout` 프로퍼티를 추가
+    - ex.
+      ```
+      const [clicked, setClicked] = useState(false);
+      const toggleClick = () => setClicked((prev) => !prev);
+      <Box
+        style={{
+          justifyContent: clicked ? "center" : "flex-start",
+          alignItems: clicked ? "center" : "flex-start",
+        }}
+      >
+        <Circle layout />
+      </Box>
+      ```
+  - Shard layout 애니메이션
+    - 하나의 layout 애니메이션을 공유할 수 있음
+    - 사용법 : 사용할 컴포넌트들에 `layout="id명"` 프로퍼티를 추가
+      - 같은 id명을 사용해야함에 주의
+    - ex.
+      ```
+      <Box>{!clicked ? <Circle layoutId="circle" /> : null}</Box>
+      <Box>{clicked ? <Circle layoutId="circle" /> : null}</Box>
+      ```
+    - 여러 개의 layoutId를 사용 시 'useState'를 통해 layoutId의 값을 state값으로 사용
+  - &lt;AnimatePresence&gt; 사용 시 걸리적거리는 애니메이션 버그 해결법
+    - 아래의 방법 중 하나의 방법을 사용
+    1. 'framer-motion@10.12.7' 버전 사용하기
+    2. '10.12.8' 이후의 버전에서 'framer-motion' 패키지의 'create-projection-node'파일에서 아래와 같이 수정하기
+       (/node_modules는 커밋하지 않기 때문에, 상황에 맞는 방법을 택할 것)
+       ```
+       didUpdate() {
+         if (!this.updateScheduled) {
+           this.updateScheduled = true;
+           // queueMicrotask(() => this.update());
+           this.update();
+         }
+       }
+       ```
+    - 참고 자료
+      - [ https://github.com/framer/motion/issues/2391 ]
+      - [ https://github.com/framer/motion/issues/2172 ]
+  - transformOrigin
+    - framer-motion에서 transformOrigin 사용 시 { originX, originY, originZ }로 사용
+      - originX, originY : 0 ~ 1 사이의 값 (기본값 : 0.5)
+      - originZ : px단위
 
 ---
 
